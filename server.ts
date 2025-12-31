@@ -1,15 +1,14 @@
+// Import the Express application
+import app from "./src/app";
 
-import app from "./src/app.js";
-import { envConfig } from "./src/config/confit.js";
+// Import environment configuration
+import { envConfig } from "./src/config/config";
 
+// Import and invoke the connectDB function to establish database connection
+import { connectDB } from "./src/database/connection";
+connectDB();
 
-app.get("/", (req, res)=>{
-    res.send("Hello World!")
-})
-
-
-
-
+// Start the server
 function startServer() {
     const port = envConfig.port
     app.listen(port, () => {
