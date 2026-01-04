@@ -19,9 +19,9 @@ export const connectDB = async () => {
         console.error("Unable to connect to the database:", error);
     }
 
-    sequelize.sync({ alter: false }).then(() => [
+    sequelize.sync({ alter: false }).then(() => {
         console.log("All models were synchronized successfully.")
-    ])
+    })
 }
 
 export default sequelize;
