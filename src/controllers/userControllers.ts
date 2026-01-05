@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import User from "../database/models/userModel";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-
+import generateToken from "../services/generateToken";
 
 class UserController {
     // User controller methods would go here
@@ -55,16 +54,13 @@ class UserController {
             return
         }
 
-        // Generate token (for simplicity, using a dummy token here)
-        const token = jwt.sign({id: user.id}, "secretKey", {
-            expiresIn: "2d"
-        })
+        const token = generateToken(user.id)
+
         res.status(200).json({
             message: "Login successful",
             data: token
         })
     }
 }
-
 
 export default UserController;
