@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import generateToken from "../services/generateToken";
 import generateOtp from "../services/generateOtp";
 import sendMail from "../services/sendMail";
+import checkOtpExpiration from "../services/checkOtpExpiration";
+import sendResponse from "../services/sendResponse";
 
 class UserController {
     // User controller methods would go here
@@ -21,10 +23,10 @@ class UserController {
 
         // Check if user already exists
         const existingUser = await User.findOne({
-            where: {userEmail}
+            where: { userEmail }
         })
 
-        if(existingUser){
+        if (existingUser) {
             res.status(400).json({
                 message: "User with this email already exists"
             })
@@ -120,12 +122,87 @@ class UserController {
 
         // save otp to db
         user.otp = otp.toString();
-        user.otpGeneratedTime = Date().toString();
+        user.otpGeneratedTime = Date.now().toString();
         await user.save();
 
         res.status(200).json({
             message: "OTP sent to your email"
         })
+    }
+
+    // Verify otp
+    static async verifyOtp(req: Request, res: Response): Promise<void> {
+        const { userEmail, otp } = req.body;
+        if (!userEmail || !otp) {
+            res.status(400).json({
+                message: "All fields are required"
+            })
+        }
+
+        // check if user exists
+        const user = await User.findOne({
+            where: { userEmail }
+        })
+
+        if (!user) {
+            res.status(400).json({
+                message: "User with this email does not exist"
+            })
+            return
+        }
+
+        // otp verification
+        const data = await User.findOne({
+            where: {
+                userEmail,
+                otp
+            }
+        })
+        if (!data) {
+            res.status(400).json({
+                message: "Invalid OTP"
+            })
+            return
+        }
+
+        // check otp expiry (2 minutes)
+
+        checkOtpExpiration(res, data.otpGeneratedTime)
+
+        // otp is valid
+        res.status(200).json({
+            message: "OTP verified successfully"
+        })
+    }
+
+    // Reset password
+    static async resetPassword(req: Request, res: Response): Promise<void> {
+        const { userEmail, newPassword, confirmPassword } = req.body;
+        if (!userEmail || !newPassword || !confirmPassword) {
+            sendResponse(res, 400, "All fields are required")
+            return
+        }
+
+        // check if passwords match
+        if (newPassword !== confirmPassword) {
+            sendResponse(res, 400, "Passwords do not match")
+            return
+        }
+
+        // check if user exists
+        const user = await User.findOne({
+            where: { userEmail }
+        })
+
+        if (!user) {
+            sendResponse(res, 400, "User with this email does not exist")
+            return
+        }
+
+        // update password
+        user.userPassword = bcrypt.hashSync(newPassword, 10)
+        await user.save()
+        sendResponse(res, 200, "Password reset successfully")
     }
 }
 
