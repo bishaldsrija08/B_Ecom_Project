@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import generateToken from "../services/generateToken";
 import generateOtp from "../services/generateOtp";
 import sendMail from "../services/sendMail";
-import { text } from "figlet";
 
 class UserController {
     // User controller methods would go here
