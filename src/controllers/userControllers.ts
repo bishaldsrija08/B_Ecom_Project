@@ -14,6 +14,11 @@ class UserController {
         // Registration logic
         const { username, userEmail, userPassword } = req.body;
 
+        if (req.body.userRole == "admin") {
+            sendResponse(res, 400, "Cannot register as admin");
+            return
+        }
+
         if (!username || !userEmail || !userPassword) {
             res.status(400).json({
                 message: "All fields are required"
