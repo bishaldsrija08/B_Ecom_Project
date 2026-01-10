@@ -10,4 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 import userRoutes from "./routes/userRoutes";
 app.use("/api/auth", userRoutes)
 
+import categoryRoutes from "./routes/categoryRoutes"
+app.use("", categoryRoutes)
+
 export default app;
