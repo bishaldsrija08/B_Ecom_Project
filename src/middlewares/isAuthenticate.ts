@@ -13,7 +13,7 @@ interface IAuthRequest extends Request {
     }
 }
 
-    export enum UserRole {
+export enum UserRole {
     Admin = "admin",
     Customer = "customer"
 }
@@ -39,7 +39,7 @@ class IsAuthenticate {
                 return
             }
             const id = decoded.userId
-            console.log(decoded)
+            
             // find user by id
             const userData = await User.findByPk(id, {
                 attributes: { exclude: ["otp", "otpGeneratedTime", "createdAt", "updatedAt"] }
@@ -58,16 +58,17 @@ class IsAuthenticate {
     // Role based authorization
 
     restrictTo(...roles: UserRole[]) {    // rest operator to accept multiple roles
-        return (req: IAuthRequest, res: Response, next: NextFunction)=>{
+        return (req: IAuthRequest, res: Response, next: NextFunction) => {
             let userRole = req.user?.userRole
-            if(!roles.includes(userRole as UserRole)){
+            if (!roles.includes(userRole as UserRole)) {
                 res.status(403).json({
                     message: "Forbidden: You do not have permission to perform this action"
                 })
                 return
             }
             next()
-        }}
+        }
+    }
 }
 
 export default new IsAuthenticate

@@ -1,5 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import { envConfig } from "../config/config";
+import Product from "./models/productMode";
+import Category from "./models/categoryModel";
 
 if (!envConfig.databaseUrl) {
     throw new Error("DATABASE_URL is not defined in environment variables");
@@ -14,6 +16,11 @@ export const connectDB = async () => {
         await sequelize.authenticate()
             .then(() => {
                 console.log("Database connected successfully.");
+
+                // Relationships between prodcts and categories 
+                Product.belongsTo(Category, { foreignKey: "categoryId" })
+                Category.hasOne(Product, { foreignKey: "categoryId" })
+
             })
     } catch (error) {
         console.error("Unable to connect to the database:", error);
@@ -24,4 +31,4 @@ export const connectDB = async () => {
     })
 }
 
-export default sequelize;
+export default sequelize; 

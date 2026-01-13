@@ -5,7 +5,7 @@ const router = Router();
 
 
 router.route("/categories").get(CategoryController.getAllCategories).post(isAuthenticate.isAuthenticated, isAuthenticate.restrictTo(UserRole.Admin), CategoryController.addCategory)
-router.route("/categories/:id").get(CategoryController.getCategoryById).delete(CategoryController.deleteCategoryById).patch(CategoryController.updateCategoryById)
+router.route("/categories/:id").get(CategoryController.getCategoryById).delete(isAuthenticate.isAuthenticated, isAuthenticate.restrictTo(UserRole.Admin), CategoryController.deleteCategoryById).patch(isAuthenticate.isAuthenticated, isAuthenticate.restrictTo(UserRole.Admin), CategoryController.updateCategoryById)
 
 
 export default router;
