@@ -1,4 +1,5 @@
 import { Table, DataType, Column, Model, Validate } from "sequelize-typescript"
+import { OrderStatus } from "../../globals/types"
 
 @Table({
     tableName: "orders",
@@ -39,8 +40,12 @@ class Order extends Model {
     declare totalAmoung: number
 
     @Column({
-        type: DataType.ENUM("Pending", "Shipped", "Delivered", "Cancelled", "On the way", "Returned"),
+        type: DataType.ENUM(OrderStatus.Preperation, OrderStatus.OnTheWay, OrderStatus.Delivered, OrderStatus.Cancelled, OrderStatus.Pending),
+        defaultValue: OrderStatus.Pending,
         allowNull: false
     })
+    declare orderStatus: string
 
 }
+
+export default Order
