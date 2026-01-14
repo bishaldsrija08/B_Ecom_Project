@@ -37,7 +37,7 @@ class Order extends Model {
         type: DataType.FLOAT,
         allowNull: false
     })
-    declare totalAmoung: number
+    declare totalAmount: number
 
     @Column({
         type: DataType.ENUM(OrderStatus.Preperation, OrderStatus.OnTheWay, OrderStatus.Delivered, OrderStatus.Cancelled, OrderStatus.Pending),

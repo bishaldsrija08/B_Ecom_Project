@@ -19,4 +19,8 @@ app.use("", categoryRoutes)
 import productRoutes from "./routes/productRoutes"
 app.use("", productRoutes)
 
+// Order Routes
+import orderRoutes from "./routes/orderRoutes"
+app.use("", orderRoutes)
+
 export default app;

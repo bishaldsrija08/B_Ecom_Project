@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 import { envConfig } from "../config/config";
 import User from "../database/models/userModel";
 
-interface IAuthRequest extends Request {
+export interface IAuthRequest extends Request {
     user?: {
         id: string,
         username: string,
