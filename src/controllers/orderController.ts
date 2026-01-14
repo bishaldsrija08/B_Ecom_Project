@@ -1,9 +1,11 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import Order from "../database/models/orderMode";
 import OrderDetails from "../database/models/orderDetailsModel";
 import { IAuthRequest } from "../middlewares/isAuthenticate";
 import { PaymentMethod, PaymentStatus } from "../globals/types";
 import Payment from "../database/models/paymentModel";
+import axios from "axios";
+import { envConfig } from "../config/config";
 
 interface IProduct {
     productId: string,
@@ -39,25 +41,43 @@ class OrderController {
         })
 
 
-        // for payment
-        if (paymentMethod === PaymentMethod.COD) {
-            // Cash on delivery logic
-            await Payment.create({
-                orderId: orderData.id,
-                paymentMethod: PaymentMethod.COD,
-                paymentStatus: PaymentStatus.Unpaid
-            })
+        // for payment=> cod, esewa, khalti
 
-        } else if (paymentMethod === PaymentMethod.Esewa) {
+        // Cash on delivery logic
+        const paymentData = await Payment.create({
+            orderId: orderData.id,
+            paymentMethod: PaymentMethod.COD,
+            paymentStatus: PaymentStatus.Unpaid
+        })
+
+        if (paymentMethod === PaymentMethod.Esewa) {
             // esewa payment integration
+
         } else {
             // Khalti payment integration
-        }
+            const khaltiPaymentData = {
+                return_url: "http://localhost:5173/",
+                website_url: "http://localhost:5173",
+                amount: totalAmount * 100, // in paisa
+                purchase_order_id: orderData.id,
+                purchase_order_name: "Order Payment" + orderData.id
 
-        res.status(200).json({
-            message: "Order created successfully",
-            data: orderData
-        })
+            }
+            const response = await axios.post("https://dev.khalti.com/api/v2/epayment/initiate/", khaltiPaymentData, {
+                headers: {
+                    Authorization: "Key " + envConfig.khaltiSecretKey as string
+                }
+            })
+            const khaltiResponse = response.data
+            const pidx = khaltiResponse.pidx
+            paymentData.pidx = pidx
+            await paymentData.save()
+
+            res.status(200).json({
+                message: "Order created successfully",
+                data: khaltiResponse.payment_url
+            })
+        }
     }
 }
 
