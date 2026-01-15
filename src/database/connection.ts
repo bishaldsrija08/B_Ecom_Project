@@ -14,15 +14,15 @@ export const connectDB = async () => {
         await sequelize.authenticate()
             .then(() => {
                 console.log("Database connected successfully.");
-            // Relatinshipf file here
-            require("./modelRelationships")
-               
+                // Relationship file here
+                require("./modelRelationships")
+
             })
     } catch (error) {
         console.error("Unable to connect to the database:", error);
     }
 
-    sequelize.sync({ alter: false }).then(() => {
+    sequelize.sync({ alter: false, force: false }).then(() => {
         console.log("All models were synchronized successfully.")
     })
 }

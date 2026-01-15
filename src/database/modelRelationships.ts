@@ -6,6 +6,7 @@ import User from "./models/userModel";
 import Order from "./models/orderMode";
 import Payment from "./models/paymentModel";
 import OrderDetails from "./models/orderDetailsModel";
+import Cart from "./models/cartModel";
 
 // Relationships between prodcts and categories 
 Product.belongsTo(Category, { foreignKey: "categoryId" }) // Product table ma categoryId foreign key cha
@@ -26,3 +27,11 @@ Order.hasMany(OrderDetails, { foreignKey: "orderId" })
 // Relationship between order detail and product
 OrderDetails.belongsTo(Product, { foreignKey: "productId" }) // OrderDetails table ma productId foreign key cha
 Product.hasMany(OrderDetails, { foreignKey: "productId" })
+
+// Relationship between User and Cart
+Cart.belongsTo(User, { foreignKey: "userId" }) // Cart table ma userId foreign key cha
+User.hasMany(Cart, { foreignKey: "userId" })
+
+// Relationship between Product and Cart
+Cart.belongsTo(Product, { foreignKey: "productId" }) // Cart table ma productId foreign key cha
+Product.hasMany(Cart, { foreignKey: "productId" })

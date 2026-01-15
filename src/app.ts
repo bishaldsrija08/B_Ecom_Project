@@ -19,6 +19,10 @@ app.use("", categoryRoutes)
 import productRoutes from "./routes/productRoutes"
 app.use("", productRoutes)
 
+// Cart Rutes
+import cartRoutes from "./routes/cartRoutes"
+app.use("", cartRoutes)
+
 // Order Routes
 import orderRoutes from "./routes/orderRoutes"
 app.use("", orderRoutes)
