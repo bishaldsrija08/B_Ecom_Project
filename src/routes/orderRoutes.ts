@@ -7,6 +7,7 @@ import errorHandling from "../services/errorHandling";
 const router = Router();
 
 router.route("/order").post(isAuthenticate.isAuthenticated, errorHandling(orderController.createOrder))
+router.route("/verify-pidx").post(isAuthenticate.isAuthenticated, errorHandling(orderController.verifyKhaltiPayment))
 
 
 
