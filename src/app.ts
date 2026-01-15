@@ -1,6 +1,6 @@
 import express from 'express';
-import './database/connection';
 const app = express();
+import './database/connection';
 
 // Body parser middleware
 app.use(express.json());

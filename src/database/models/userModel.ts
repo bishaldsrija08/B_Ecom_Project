@@ -1,4 +1,5 @@
 import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { UserRole } from "../../middlewares/isAuthenticate";
 
 @Table({
     tableName: "users",
@@ -30,8 +31,8 @@ class User extends Model {
     declare userPassword: string
 
     @Column({
-        type: DataType.ENUM("admin", "customer"),
-        defaultValue: "customer"
+        type: DataType.ENUM(UserRole.Admin, UserRole.Customer),
+        defaultValue: UserRole.Customer
     })
     declare userRole: string
 

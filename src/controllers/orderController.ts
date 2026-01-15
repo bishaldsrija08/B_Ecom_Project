@@ -51,6 +51,7 @@ class OrderController {
 
         if (paymentMethod === PaymentMethod.Esewa) {
             // esewa payment integration
+            // raminining esewa integration
 
         } else if (paymentMethod === PaymentMethod.Khalti) {
             // Khalti payment integration
@@ -67,7 +68,7 @@ class OrderController {
                 }
             })
 
-            if (response.status == 200) {
+            if (response.status !== 200) {
                 res.status(500).json({ message: "Failed to initiate payment with Khalti" })
                 return
             }
