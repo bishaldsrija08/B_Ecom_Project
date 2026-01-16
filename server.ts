@@ -17,6 +17,7 @@ import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import User from "./src/database/models/userModel";
 import { UserRole } from "./src/middlewares/isAuthenticate";
+import Order from "./src/database/models/orderMode";
 
 // Start the server
 function startServer() {
@@ -65,8 +66,25 @@ function startServer() {
 
                 }
             })
+        } else {
+            socket.emit("unauthorized", "No token provided")
         }
-
+        socket.on("updateOrderStatus", async (data) => {
+            const { orderId, status, userId } = data
+            const userFound = onlineUsers.find((user) => userId === userId)
+            await Order.update({
+                orderStatus: status
+            }, {
+                where: {
+                    id: orderId
+                }
+            })
+            if (userFound) {
+                io.to(userFound.socketId).emit("success", "Order status updated successfully")
+            } else {
+                socket.emit("error", "User is not online")
+            }
+        })
     })
 }
 startServer();
